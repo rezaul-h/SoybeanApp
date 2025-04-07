@@ -1,0 +1,5 @@
+Both the saved model exceeds 100 MB. So we can not upload them to the repository. Downloadable links are given below: 
+
+Soybean_Seeds_maxvit_model.pth: https://drive.google.com/file/d/144rehjApAlBjBzxEZT8ZBFd4hyAPs7Mg/view?usp=sharing
+
+ASDID_maxvit_model.pth: https://drive.google.com/file/d/1WgB3kmcDaLqozwI3UnUDK8B7cnmi80n3/view?usp=sharing

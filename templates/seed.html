@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CottonVerse</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom, #fafff8, #c1fcdc);
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    h1 {
+      color: #026b3d;
+      margin: 30px 0 10px;
+      font-size: 40px;
+      letter-spacing: 1px;
+    }
+
+    form {
+      margin-top: 10px;
+    }
+
+    input[type="file"] {
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      background: #fff;
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(to right, #2d9953, #38b869);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background: linear-gradient(to right, #38b869, #2d9953);
+      transform: translateY(-1px);
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 40px;
+      padding: 40px 20px;
+    }
+
+    .panel {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 18px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      width: 320px;
+      transition: transform 0.3s ease;
+    }
+
+    .panel:hover {
+      transform: translateY(-5px);
+    }
+
+    .panel img {
+      width: 100%;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .panel h3 {
+      color: #027d3c;
+      margin-bottom: 10px;
+    }
+
+    .probability-table {
+      width: 100%;
+      font-size: 14px;
+      text-align: left;
+    }
+
+    .probability-table td {
+      padding: 6px;
+      vertical-align: middle;
+    }
+
+    .bar-container {
+      width: 100px;
+      height: 10px;
+      background-color: #e0e0e0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(to right, #8a007d, #c200b0);
+      border-radius: 6px 0 0 6px;
+      transition: width 0.4s ease-in-out;
+    }
+
+    .icon {
+      font-size: 16px;
+      margin-right: 5px;
+    }
+
+    .check {
+      color: #1e8f1e;
+    }
+
+    .cross {
+      color: #c62828;
+    }
+
+    .highlight {
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 16px;
+      background: linear-gradient(to right, #00c36f, #00a65e);
+      color: white;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .btn-row {
+      margin-top: 20px;
+    }
+
+    .btn-row a {
+      display: inline-block;
+      margin: 0 10px;
+      background: linear-gradient(to right, #f2709c, #ff9472);
+      color: white;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: bold;
+      text-decoration: none;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+      transition: background 0.3s ease-in-out;
+    }
+
+    .btn-row a:hover {
+      background: linear-gradient(to right, #ff6c94, #f67f6e);
+    }
+
+    footer {
+      margin: 40px 0 20px;
+      font-size: 13px;
+      color: #555;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .panel {
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>SoyScan</h1>
+
+  <form method="POST" enctype="multipart/form-data">
+    <input type="file" name="file" required>
+    <button type="submit">Predict</button>
+  </form>
+
+  {% if prediction %}
+  <div class="container">
+
+    <!-- GradCAM Panel -->
+    <div class="panel">
+      <img src="{{ cam_url }}" alt="GradCAM Output">
+      <table class="probability-table">
+        {% for label, prob in combined %}
+        <tr>
+          <td>
+            {% if label == prediction %}
+              <span class="icon check">✔</span>
+            {% else %}
+              <span class="icon cross">✖</span>
+            {% endif %}
+            {{ label }}
+          </td>
+          <td>
+            <div class="bar-container">
+              <div class="bar-fill" style="width: {{ prob }}%;"></div>
+            </div>
+          </td>
+          <td><strong>{{ prob }}%</strong></td>
+        </tr>
+        {% endfor %}
+      </table>
+      <div class="highlight">Predicted Class: {{ prediction }}</div>
+    </div>
+
+    <!-- Upload Image Panel -->
+    <div class="panel">
+      <h3>Uploaded Image</h3>
+      <img src="{{ url_for('static', filename='uploads/' + uploaded_image) }}" alt="Uploaded Image">
+      <div class="btn-row">
+        <a href="{{ request.path }}">Reload</a>
+        <a href="{{ cam_url }}" download>Download CAM</a>
+      </div>
+    </div>
+
+  </div>
+  {% endif %}
+
+  <footer>
+    © CottonVerse 2025 – Built with 💚 for Leaf & Fabric Classification
+  </footer>
+
+</body>
+</html>

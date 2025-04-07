@@ -1,0 +1,8 @@
+Flask
+torch
+torchvision
+timm
+pillow
+numpy
+opencv-python
+pytorch-grad-cam
