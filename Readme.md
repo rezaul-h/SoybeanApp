@@ -75,10 +75,6 @@ python app.py
 
 Model file not included — specify `.pth` location in `utils.py`
 
-## 🖼️ Screenshots & Demo
-
-### 🎥 Demo Video
-> `Demo/demo.mp4`
 
 ### 🔎 Prediction Example
 > Add screenshots showing:
